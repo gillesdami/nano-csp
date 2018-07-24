@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "dev-server": "^0.0.2",
+    "parcel": "^1.9.7",
+    "simple-dev-server": "^2.0.2"
+  },
+  "scripts": {
+    "build": "parcel build index.html",
+    "serve": "dev-server"
+  }
+}
