@@ -1,9 +1,11 @@
-import {call, fork, join, runSaga} from './nano-saga/nano-saga.js';
+import runSaga from './nano-saga/nano-saga.js';
 import channel from './nano-saga/nano-saga-channel.js';
-import {effectCreators, customEffects} from './nano-saga/nano-saga-redux.js';
-const {take, put, select} = effectCreators;
+import {effectCreators, executors} from './nano-saga/nano-saga-effects.js';
+const {call, fork, join, take, put, select, takeEvery} = effectCreators;
 
 async function* mainSaga() {
+    yield takeEvery('INCREMENT', console.log, "+");
+    yield takeEvery('INCREMENT', console.log, "p");
     yield fork(addChannelSaga);
     yield take('INCREMENT');
     console.log("take1");
@@ -30,11 +32,11 @@ const store = Redux.createStore((state = 0, action) => {
 });
 
 const mocks = [{
-    matcher: (step) => step.value && step.value.type === 'put' && step.value.action.type === 'INCREMENT',
-    value: {done: false, value: put({type: 'DECREMENT'})}
+    matcher: (value) => value && value.type === 'put' && value.action.type === 'INCREMENT',
+    value: put({type: 'DECREMENT'})
 }, {
-    matcher: (step) => step.value && step.value.type === 'take' && step.value.matcher === 'INCREMENT',
-    value: {done: false, value: take('DECREMENT')}
+    matcher: (value) => value && value.type === 'take' && value.matcher === 'INCREMENT',
+    value: take('DECREMENT')
 }];
 
-runSaga(mainSaga, undefined, undefined, customEffects(store));
+runSaga(mainSaga, undefined, executors(store));
