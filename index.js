@@ -37,4 +37,4 @@ const mocks = [{
     value: {done: false, value: take('DECREMENT')}
 }];
 
-runSaga(mainSaga, undefined, mocks, customEffects(store));
+runSaga(mainSaga, undefined, undefined, customEffects(store));

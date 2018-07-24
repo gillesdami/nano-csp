@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "dev-server": "^0.0.2"
-  },
-  "scripts": {
-    "serve": "dev-server"
-  }
-}
