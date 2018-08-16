@@ -1,11 +1,9 @@
 {
   "devDependencies": {
-    "dev-server": "^0.0.2"
+    "parcel": "^1.9.7",
+    "babel-plugin-transform-async-generator-functions": "^6.24.1"
   },
   "scripts": {
-    "serve": "dev-server"
-  },
-  "dependencies": {
-    "redux": "^4.0.0"
+    "build": "parcel build index.js && parcel build effects.js && parcel build channel.js"
   }
 }

@@ -1,24 +1,21 @@
-# nano-csp
-
-CSP library for learning under 100 lines (runner 15 lines) in ES8. This repository isn't made for production but can help understanding a bit of the black magic behind libs such as js-csp or redux-saga.
-
-## example
-
-```js
-import runSaga from './nano-csp';
-import channel from './nano-csp/channel.js';
-import {effectCreators, executors} from './nano-csp/effects.js';
+import runSaga from './nano-saga/nano-saga.js';
+import channel from './nano-saga/nano-saga-channel.js';
+import {effectCreators, executors} from './nano-saga/nano-saga-effects.js';
 const {call, fork, join, take, put, select, takeEvery} = effectCreators;
 
 async function* mainSaga() {
-    yield takeEvery('INCREMENT', console.log, "INC");
+    yield takeEvery('INCREMENT', console.log, "+");
+    yield takeEvery('INCREMENT', console.log, "p");
     yield fork(addChannelSaga);
     yield take('INCREMENT');
+    console.log("take1");
+    yield take((type) => type === 'INCREMENT');
+    console.log("take2");
     yield call(console.log, yield select((state) => state));
 }
 
 async function* addChannelSaga() {
-    for await (const event of yield channel((emit) => window.button = emit)) {
+    for await (const event of yield channel((emit) => window.addChannel = emit)) {
         yield put({type: 'INCREMENT'});
     }
 }
@@ -34,14 +31,6 @@ const store = Redux.createStore((state = 0, action) => {
     }
 });
 
-runSaga(mainSaga, undefined, executors(store));
-
-setInterval(window.button, 100)();
-```
-
-mocking:
-
-```js
 const mocks = [{
     matcher: (value) => value && value.type === 'put' && value.action.type === 'INCREMENT',
     value: put({type: 'DECREMENT'})
@@ -50,12 +39,4 @@ const mocks = [{
     value: take('DECREMENT')
 }];
 
-runSaga(mainSaga, undefined, executors(store), mocks);
-```
-
-## build
-
-```bash
-yarn
-yarn build
-```
+runSaga(mainSaga, undefined, executors(store));
